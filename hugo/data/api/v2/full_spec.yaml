@@ -58586,6 +58586,7 @@ components:
         - `image`: `url` is required.
         - `widget`: `tileDef` is required (any well-formed JSON; the frontend owns the renderable schema).
         - `llmobs_trace`: `traceId` is required; `interactionType`, when set, must be `trace` or `experiment_trace`.
+        - `frontend`: `code` is required and must be a non-empty string; `label` is optional.
 
         `height`, when set, must be positive.
       properties:
@@ -58593,11 +58594,16 @@ components:
           description: Alternative text for an `image` block.
           example: "Example image"
           type: string
+        code:
+          description: HTML code rendered by a `frontend` block. Required for `frontend` blocks.
+          example: '<div class="status-card">Ready for review</div>'
+          minLength: 1
+          type: string
         content:
           description: |-
             Block payload. A string for `markdown`, `header`, and `text`; an
             arbitrary JSON value (object, array, or scalar) for `json`. Omitted
-            for `image`, `widget`, and `llmobs_trace`.
+            for `image`, `widget`, `llmobs_trace`, and `frontend`.
           example: "## Triage Instructions"
         height:
           description: Optional rendered height. Must be positive when set.
@@ -58607,7 +58613,7 @@ components:
         interactionType:
           $ref: '#/components/schemas/LLMObsContentBlockLLMObsTraceInteractionType'
         label:
-          description: Optional label rendered alongside the block.
+          description: Optional label rendered alongside a `frontend` block.
           example: "Triage Instructions"
           type: string
         level:
@@ -58695,6 +58701,7 @@ components:
         - image
         - widget
         - llmobs_trace
+        - frontend
       example: markdown
       type: string
       x-enum-varnames:
@@ -58705,6 +58712,7 @@ components:
         - IMAGE
         - WIDGET
         - LLMOBS_TRACE
+        - FRONTEND
     LLMObsContentBlocks:
       description: |-
         List of content blocks that make up a `display_block` interaction.
@@ -171374,6 +171382,9 @@ paths:
                                 experiment_id: abc-123
                               label: "Experiments"
                               type: json
+                            - code: '<div class="status-card">Ready for review</div>'
+                              label: "Review status"
+                              type: frontend
                           type: display_block
                     type: interactions
             schema:
